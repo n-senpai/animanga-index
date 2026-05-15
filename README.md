@@ -5,4 +5,4 @@ www.animangaindex.substack.com
 
 www.nsenpai.substack.com
 
-n-senpai.github.io/animanga-index
+https://n-senpai.github.io/animanga-index/
