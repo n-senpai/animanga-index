@@ -2,7 +2,7 @@ name: Update Writer Directory
 
 on:
   schedule:
-    - cron: '0 8 * * 0'  # every Sunday at 8AM UTC (1 hour after digest runs)
+    - cron: '0 17 * * 0'  # every Sunday at 1PM Montreal time (EDT, UTC-4)
   workflow_dispatch:       # manual trigger
 
 jobs:
