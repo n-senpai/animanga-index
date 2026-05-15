@@ -459,9 +459,10 @@ def generate_html(writers_by_category, latest_post, total_writers):
   </div>
 
   <div class="footer">
-    <a href="{YOUR_SUBSTACK_URL}" target="_blank">{YOUR_PUBLICATION}</a> &nbsp;|&nbsp;
-    Updated weekly &nbsp;|&nbsp; {updated}
-  </div>
+      <a href="{YOUR_SUBSTACK_URL}" target="_blank">{YOUR_PUBLICATION}</a> &nbsp;|&nbsp;
+      Updated weekly &nbsp;|&nbsp; {updated} &nbsp;|&nbsp;
+      <a href="https://ko-fi.com/nsenpaiwrites" target="_blank">Buy me a coffee☕</a>
+    </div>
 
   <script>
     const btns  = document.querySelectorAll('.filter-btn');
