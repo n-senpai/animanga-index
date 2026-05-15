@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weekly AniManga Index — Writer Directory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal:       #0d9488;
+      --teal-light: #14b8a6;
+      --teal-dark:  #0f766e;
+      --bg:         #fafafa;
+      --bg-card:    #ffffff;
+      --border:     #e5e7eb;
+      --text:       #111827;
+      --text-muted: #6b7280;
+      --text-dim:   #9ca3af;
+      --mature:     #d97706;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.5rem 1.5rem 1.25rem;
+      border-bottom: 2px solid var(--teal);
+    }
+
+    .pub-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .pub-title:hover { color: var(--teal); }
+
+    .pub-logo {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .header-meta {
+      font-size: 0.98rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .digest-link-text {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+    }
+
+    .digest-link {
+      color: var(--teal);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .digest-link:hover { text-decoration: underline; }
+
+    /* ── Latest post ── */
+    .latest-post {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      max-width: 1100px;
+      margin: 1rem auto 0;
+      padding: 0.875rem 1.25rem;
+      background: var(--teal);
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .latest-post:hover { background: var(--teal-dark); }
+
+    .latest-eyebrow {
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #ccfbf1;
+      white-space: nowrap;
+    }
+
+    .latest-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      color: #ffffff;
+      flex: 1;
+    }
+
+    .latest-arrow {
+      color: #ccfbf1;
+      font-size: 1.1rem;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      max-width: 1100px;
+      margin: 1.5rem auto 0;
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Filters ── */
+    .filters {
+      max-width: 1100px;
+      margin: 1.25rem auto 0;
+      padding: 0 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .filter-btn {
+      padding: 0.4rem 0.9rem;
+      border-radius: 99px;
+      border: 1.5px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    .filter-btn.active {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: #ffffff;
+    }
+
+    /* ── Grid ── */
+    .grid {
+      max-width: 1100px;
+      margin: 1.25rem auto 3rem;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+
+    /* ── Writer card ── */
+    .writer-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: box-shadow 0.2s, border-color 0.2s;
+      cursor: pointer;
+    }
+
+    .writer-card.hidden { display: none; }
+
+    .writer-card:hover {
+      border-color: var(--teal-light);
+      box-shadow: 0 4px 16px rgba(13, 148, 136, 0.08);
+    }
+
+    .writer-card.hidden { display: none; }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .writer-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .writer-name:hover { color: var(--teal); }
+
+    .mature-tag {
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--mature);
+      border: 1px solid var(--mature);
+      border-radius: 4px;
+      padding: 0.1rem 0.35rem;
+      vertical-align: middle;
+      margin-left: 0.3rem;
+    }
+
+    .writer-country {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 0.15rem;
+    }
+
+    .pub-name {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--teal);
+      text-decoration: none;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .pub-name:hover { color: var(--teal-dark); text-decoration: underline; }
+
+    .writer-desc-wrap {
+      display: none;
+    }
+
+    .writer-card.expanded .writer-desc-wrap {
+      display: block;
+    }
+
+    .writer-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      padding-top: 0.35rem;
+    }
+
+    .cat-label {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      margin-top: auto;
+      padding-top: 0.25rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      border-top: 1px solid var(--border);
+    }
+
+    .footer a { color: var(--teal); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+
+    /* ── No results ── */
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .header { flex-direction: column; }
+
+      .latest-post { flex-wrap: wrap; }
+      .latest-eyebrow { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-left">
+      <a href="https://animangaindex.substack.com/" target="_blank" class="pub-title">
+        <img src="banner.png" alt="Weekly AniManga Index" class="pub-logo">
+        Weekly AniManga Index
+      </a>
+      <p class="header-meta">17 writers listed &nbsp;|&nbsp; updated May 15, 2026</p>
+      <p class="digest-link-text">Read the latest digest on <a href="https://animangaindex.substack.com/" target="_blank" class="digest-link">Substack &rarr;</a></p>
+    </div>
+  </div>
+
+  
+
+  <hr class="divider">
+
+  <div class="filters">
+          <button class="filter-btn active" data-category="all">All</button>
+      <button class="filter-btn" data-category="anime-and-manga-commentary-and-analysis">Anime & Manga</button>
+      <button class="filter-btn" data-category="artists-and-illustrators">Artists</button>
+      <button class="filter-btn" data-category="original-long-form-story-creators">Long Form Stories</button>
+      <button class="filter-btn" data-category="original-short-form-story-creators">Short Form Stories</button>
+      <button class="filter-btn" data-category="fandom-and-culture">Fandom</button>
+      <button class="filter-btn" data-category="industry-and-meta">Industry</button>
+      <button class="filter-btn" data-category="gaming">Gaming</button>
+      <button class="filter-btn" data-category="film-and-tv-commentary-and-analysis">Film & TV</button>
+
+  </div>
+
+  <div class="grid" id="writer-grid">
+    
+    <div class="writer-card" data-category="anime-and-manga-commentary-and-analysis" data-url="https://nsenpai.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://nsenpai.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">N Senpai</a>
+          <span class="writer-country">Canada</span>
+        </div>
+        <a href="https://nsenpai.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">Anime & Manga Chronicles</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">I write about Anime and Manga I follow. </p></div>
+      <div class="cat-label">Anime and Manga Commentary & Analysis</div>
+    </div>
+    <div class="writer-card" data-category="anime-and-manga-commentary-and-analysis" data-url="https://jdavismallory.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://jdavismallory.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">J. Davis Mallory</a>
+          <span class="writer-country">United States</span>
+        </div>
+        <a href="https://jdavismallory.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">J. Davis Mallory</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">I write about my experience with muscular dystrophy and my passion for anime, books, writing, TV, and music.</p></div>
+      <div class="cat-label">Anime and Manga Commentary & Analysis</div>
+    </div>
+    <div class="writer-card" data-category="anime-and-manga-commentary-and-analysis" data-url="https://nerdyandthirty.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://nerdyandthirty.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Rae Nyx</a>
+          <span class="writer-country">United States</span>
+        </div>
+        <a href="https://nerdyandthirty.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">Nerdy and Thirty</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">A look at anime fandom and culture including convention history from the perceptive of a nerdy thirty year old! Occasionally, posts about anime and manga!</p></div>
+      <div class="cat-label">Anime and Manga Commentary & Analysis</div>
+    </div>
+    <div class="writer-card" data-category="anime-and-manga-commentary-and-analysis" data-url="https://windowseatanimejournal.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://windowseatanimejournal.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Window Seat Anime Journal</a>
+          <span class="writer-country">United States</span>
+        </div>
+        <a href="https://windowseatanimejournal.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">The Window Seat Anime Journal</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">The Window Seat Anime Journal was created to provide a "book club" experience for anime watchers to introduce people to new anime and provide a forum for the thematic exploration that great anime truly deserve.</p></div>
+      <div class="cat-label">Anime and Manga Commentary & Analysis</div>
+    </div>
+    <div class="writer-card" data-category="anime-and-manga-commentary-and-analysis" data-url="https://shizou.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://shizou.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Shizou Nee</a> <span class="mature-tag">MATURE</span>
+          <span class="writer-country">Pakistan</span>
+        </div>
+        <a href="https://shizou.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">Shizou's Substack</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">Reviews, Commentary, and Longform Analysis of stuff that resonates with me emotionally, including but not limited to AniManga, Videogames, Cinema, and Music.</p></div>
+      <div class="cat-label">Anime and Manga Commentary & Analysis</div>
+    </div>
+    <div class="writer-card" data-category="anime-and-manga-commentary-and-analysis" data-url="https://taianzhou.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://taianzhou.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Tai An Zhou</a> <span class="mature-tag">MATURE</span>
+          <span class="writer-country">Philipines</span>
+        </div>
+        <a href="https://taianzhou.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">Tomato of Justice</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">I write short stories, articles about mental health and anime/manga</p></div>
+      <div class="cat-label">Anime and Manga Commentary & Analysis</div>
+    </div>
+    <div class="writer-card" data-category="anime-and-manga-commentary-and-analysis" data-url="https://phuongnguyentqk.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://phuongnguyentqk.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Coffee with an otaku </a>
+          <span class="writer-country">Vietnam </span>
+        </div>
+        <a href="https://phuongnguyentqk.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">Coffee with an otaku </a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">Talking about the shows and stuff I watch </p></div>
+      <div class="cat-label">Anime and Manga Commentary & Analysis</div>
+    </div>
+    <div class="writer-card" data-category="anime-and-manga-commentary-and-analysis" data-url="https://theanimeanthropologist.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://theanimeanthropologist.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">dani-chan</a>
+          <span class="writer-country">United States</span>
+        </div>
+        <a href="https://theanimeanthropologist.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">The Anime Anthropologist</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">I make anime a sweeter experience. I cover art history, offer commentary, and reviews for both manga and anime. I'm not a trained anthropologist, but I encourage everyone to join me in my pursuit of more knowledge!</p></div>
+      <div class="cat-label">Anime and Manga Commentary & Analysis</div>
+    </div>
+    <div class="writer-card" data-category="anime-and-manga-commentary-and-analysis" data-url="https://naoshii.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://naoshii.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Naoshi Usumi</a>
+          <span class="writer-country">Bangladesh</span>
+        </div>
+        <a href="https://naoshii.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">Abir Rahman</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">Abir Rahman covers entertainment news, anime, movie and TV show reviews, discussions and analysis. Based in Bangladesh, publishing weekly since 2017 with occasional digital product recommendations.</p></div>
+      <div class="cat-label">Anime and Manga Commentary & Analysis</div>
+    </div>
+    <div class="writer-card" data-category="fandom-and-culture" data-url="https://nsenpai.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://nsenpai.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">N Senpai</a>
+          <span class="writer-country">Canada</span>
+        </div>
+        <a href="https://nsenpai.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">Anime & Manga Chronicles</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">I write about Anime and Manga I follow. </p></div>
+      <div class="cat-label">Fandom & Culture</div>
+    </div>
+    <div class="writer-card" data-category="fandom-and-culture" data-url="https://jdavismallory.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://jdavismallory.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">J. Davis Mallory</a>
+          <span class="writer-country">United States</span>
+        </div>
+        <a href="https://jdavismallory.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">J. Davis Mallory</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">I write about my experience with muscular dystrophy and my passion for anime, books, writing, TV, and music.</p></div>
+      <div class="cat-label">Fandom & Culture</div>
+    </div>
+    <div class="writer-card" data-category="fandom-and-culture" data-url="https://nerdyandthirty.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://nerdyandthirty.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Rae Nyx</a>
+          <span class="writer-country">United States</span>
+        </div>
+        <a href="https://nerdyandthirty.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">Nerdy and Thirty</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">A look at anime fandom and culture including convention history from the perceptive of a nerdy thirty year old! Occasionally, posts about anime and manga!</p></div>
+      <div class="cat-label">Fandom & Culture</div>
+    </div>
+    <div class="writer-card" data-category="fandom-and-culture" data-url="https://awashofstars.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://awashofstars.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Kristin Davenport</a>
+          <span class="writer-country">United States</span>
+        </div>
+        <a href="https://awashofstars.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">Awash of Stars</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">Awash of Stars is a blog about the process of making art. The artist's influences include a few anime and manga series.</p></div>
+      <div class="cat-label">Fandom & Culture</div>
+    </div>
+    <div class="writer-card" data-category="fandom-and-culture" data-url="https://windowseatanimejournal.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://windowseatanimejournal.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Window Seat Anime Journal</a>
+          <span class="writer-country">United States</span>
+        </div>
+        <a href="https://windowseatanimejournal.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">The Window Seat Anime Journal</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">The Window Seat Anime Journal was created to provide a "book club" experience for anime watchers to introduce people to new anime and provide a forum for the thematic exploration that great anime truly deserve.</p></div>
+      <div class="cat-label">Fandom & Culture</div>
+    </div>
+    <div class="writer-card" data-category="fandom-and-culture" data-url="https://thepokemonobserver.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://thepokemonobserver.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">The Pokémon Observer</a>
+          <span class="writer-country">United Kingdom </span>
+        </div>
+        <a href="https://thepokemonobserver.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">The Pokémon Observer</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">I write about collecting and investing in vintage Pokémon cards from the Wizards of the Coast era. I share my journey in real time, exploring market behaviour, real-world events, lessons learned, and the balance between nostalgia and making money.</p></div>
+      <div class="cat-label">Fandom & Culture</div>
+    </div>
+    <div class="writer-card" data-category="fandom-and-culture" data-url="https://theanimeanthropologist.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://theanimeanthropologist.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">dani-chan</a>
+          <span class="writer-country">United States</span>
+        </div>
+        <a href="https://theanimeanthropologist.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">The Anime Anthropologist</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">I make anime a sweeter experience. I cover art history, offer commentary, and reviews for both manga and anime. I'm not a trained anthropologist, but I encourage everyone to join me in my pursuit of more knowledge!</p></div>
+      <div class="cat-label">Fandom & Culture</div>
+    </div>
+    <div class="writer-card" data-category="original-long-form-story-creators" data-url="https://mdsauthor.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://mdsauthor.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Mark S, PhD</a> <span class="mature-tag">MATURE</span>
+          <span class="writer-country">United Kingdom </span>
+        </div>
+        <a href="https://mdsauthor.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">The Three Moons Mythos </a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">Lovecraft meets Cyberpunk </p></div>
+      <div class="cat-label">Original Long Form Story Creators</div>
+    </div>
+    <div class="writer-card" data-category="original-long-form-story-creators" data-url="https://williamdaweiv.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://williamdaweiv.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">F.P. Dawe (Author)</a> <span class="mature-tag">MATURE</span>
+          <span class="writer-country">United States</span>
+        </div>
+        <a href="https://williamdaweiv.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">The World of F.P. Dawe</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">The world of F.P. Dawe offers a wide variety of series, with written and audio for accessibility. The main showcase is my original short and long form dark fiction, covering horror, fantasy, and science-fiction. I am currently releasing my debut Sci-Fi novel, When the Abyss Stared Back, as an episodic series. However, I also host lore, other creators, a community world building project, and the classics from Poe to Lovecraft. </p></div>
+      <div class="cat-label">Original Long Form Story Creators</div>
+    </div>
+    <div class="writer-card" data-category="original-long-form-story-creators" data-url="https://probablysam.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://probablysam.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Sam</a> <span class="mature-tag">MATURE</span>
+          <span class="writer-country">Pakistan</span>
+        </div>
+        <a href="https://probablysam.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">WARHEIT</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">WARHEIT: A world controlled by a throne named THE CASTLE, is where Tharkane discovered a deep Truth. He single handedly stopped the deadliest war in human history, but vanished somewhere. Now it's upon Neiji and his friends to uncover The Truth about the world they live in, as their teachers lead them to their deaths.</p></div>
+      <div class="cat-label">Original Long Form Story Creators</div>
+    </div>
+    <div class="writer-card" data-category="original-long-form-story-creators" data-url="https://baltazyr.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://baltazyr.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Mikai Baltazar</a> <span class="mature-tag">MATURE</span>
+          <span class="writer-country">United States</span>
+        </div>
+        <a href="https://baltazyr.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">Mikai's Pen & Pad</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">Scenes from my ongoing light novel and other writing projects, as well as silly little manga skits featuring my OCs.</p></div>
+      <div class="cat-label">Original Long Form Story Creators</div>
+    </div>
+    <div class="writer-card" data-category="artists-and-illustrators" data-url="https://mdsauthor.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://mdsauthor.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Mark S, PhD</a> <span class="mature-tag">MATURE</span>
+          <span class="writer-country">United Kingdom </span>
+        </div>
+        <a href="https://mdsauthor.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">The Three Moons Mythos </a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">Lovecraft meets Cyberpunk </p></div>
+      <div class="cat-label">Artists & Illustrators</div>
+    </div>
+    <div class="writer-card" data-category="artists-and-illustrators" data-url="https://awashofstars.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://awashofstars.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Kristin Davenport</a>
+          <span class="writer-country">United States</span>
+        </div>
+        <a href="https://awashofstars.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">Awash of Stars</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">Awash of Stars is a blog about the process of making art. The artist's influences include a few anime and manga series.</p></div>
+      <div class="cat-label">Artists & Illustrators</div>
+    </div>
+    <div class="writer-card" data-category="artists-and-illustrators" data-url="https://aniocean.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://aniocean.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Naoshi Usumi</a>
+          <span class="writer-country">Bangladesh</span>
+        </div>
+        <a href="https://aniocean.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">AniOcean</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">AniOcean — a place built for fans who want more than just headlines. From anime reviews and TV discussions to industry gossip and analysis, we cover the entertainment world with honesty and passion.</p></div>
+      <div class="cat-label">Artists & Illustrators</div>
+    </div>
+    <div class="writer-card" data-category="original-short-form-story-creators" data-url="https://williamdaweiv.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://williamdaweiv.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">F.P. Dawe (Author)</a> <span class="mature-tag">MATURE</span>
+          <span class="writer-country">United States</span>
+        </div>
+        <a href="https://williamdaweiv.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">The World of F.P. Dawe</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">The world of F.P. Dawe offers a wide variety of series, with written and audio for accessibility. The main showcase is my original short and long form dark fiction, covering horror, fantasy, and science-fiction. I am currently releasing my debut Sci-Fi novel, When the Abyss Stared Back, as an episodic series. However, I also host lore, other creators, a community world building project, and the classics from Poe to Lovecraft. </p></div>
+      <div class="cat-label">Original Short Form Story Creators</div>
+    </div>
+    <div class="writer-card" data-category="original-short-form-story-creators" data-url="https://thesyxan.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://thesyxan.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">TheSyXan </a> <span class="mature-tag">MATURE</span>
+          <span class="writer-country">United States</span>
+        </div>
+        <a href="https://thesyxan.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">Strange Output</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">Welcome to a strange place. Where the output is faith, fiction, and fun. I'll be dropping short stories, serialized fiction, articles of faith, game spotlights, my creative process — and whatever else escapes.</p></div>
+      <div class="cat-label">Original Short Form Story Creators</div>
+    </div>
+    <div class="writer-card" data-category="original-short-form-story-creators" data-url="https://taianzhou.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://taianzhou.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Tai An Zhou</a> <span class="mature-tag">MATURE</span>
+          <span class="writer-country">Philipines</span>
+        </div>
+        <a href="https://taianzhou.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">Tomato of Justice</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">I write short stories, articles about mental health and anime/manga</p></div>
+      <div class="cat-label">Original Short Form Story Creators</div>
+    </div>
+    <div class="writer-card" data-category="original-short-form-story-creators" data-url="https://baltazyr.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://baltazyr.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Mikai Baltazar</a> <span class="mature-tag">MATURE</span>
+          <span class="writer-country">United States</span>
+        </div>
+        <a href="https://baltazyr.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">Mikai's Pen & Pad</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">Scenes from my ongoing light novel and other writing projects, as well as silly little manga skits featuring my OCs.</p></div>
+      <div class="cat-label">Original Short Form Story Creators</div>
+    </div>
+    <div class="writer-card" data-category="film-and-tv-commentary-and-analysis" data-url="https://shizou.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://shizou.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Shizou Nee</a> <span class="mature-tag">MATURE</span>
+          <span class="writer-country">Pakistan</span>
+        </div>
+        <a href="https://shizou.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">Shizou's Substack</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">Reviews, Commentary, and Longform Analysis of stuff that resonates with me emotionally, including but not limited to AniManga, Videogames, Cinema, and Music.</p></div>
+      <div class="cat-label">Film & TV Commentary & Analysis</div>
+    </div>
+    <div class="writer-card" data-category="film-and-tv-commentary-and-analysis" data-url="https://phuongnguyentqk.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://phuongnguyentqk.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Coffee with an otaku </a>
+          <span class="writer-country">Vietnam </span>
+        </div>
+        <a href="https://phuongnguyentqk.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">Coffee with an otaku </a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">Talking about the shows and stuff I watch </p></div>
+      <div class="cat-label">Film & TV Commentary & Analysis</div>
+    </div>
+    <div class="writer-card" data-category="film-and-tv-commentary-and-analysis" data-url="https://naoshii.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://naoshii.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Naoshi Usumi</a>
+          <span class="writer-country">Bangladesh</span>
+        </div>
+        <a href="https://naoshii.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">Abir Rahman</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">Abir Rahman covers entertainment news, anime, movie and TV show reviews, discussions and analysis. Based in Bangladesh, publishing weekly since 2017 with occasional digital product recommendations.</p></div>
+      <div class="cat-label">Film & TV Commentary & Analysis</div>
+    </div>
+    <div class="writer-card" data-category="film-and-tv-commentary-and-analysis" data-url="https://aniocean.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://aniocean.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">Naoshi Usumi</a>
+          <span class="writer-country">Bangladesh</span>
+        </div>
+        <a href="https://aniocean.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">AniOcean</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">AniOcean — a place built for fans who want more than just headlines. From anime reviews and TV discussions to industry gossip and analysis, we cover the entertainment world with honesty and passion.</p></div>
+      <div class="cat-label">Film & TV Commentary & Analysis</div>
+    </div>
+    <div class="writer-card" data-category="gaming" data-url="https://thepokemonobserver.substack.com" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div>
+          <a href="https://thepokemonobserver.substack.com" target="_blank" class="writer-name" onclick="event.stopPropagation()">The Pokémon Observer</a>
+          <span class="writer-country">United Kingdom </span>
+        </div>
+        <a href="https://thepokemonobserver.substack.com" target="_blank" class="pub-name" onclick="event.stopPropagation()">The Pokémon Observer</a>
+      </div>
+      <div class="writer-desc-wrap"><p class="writer-desc">I write about collecting and investing in vintage Pokémon cards from the Wizards of the Coast era. I share my journey in real time, exploring market behaviour, real-world events, lessons learned, and the balance between nostalgia and making money.</p></div>
+      <div class="cat-label">Gaming</div>
+    </div>
+    <div id="no-results" style="display:none;grid-column:1/-1;text-align:center;padding:3rem;color:#6b7280;font-size:0.9rem;">No writers found in this category yet.</div>
+  </div>
+
+  <div class="footer">
+    <a href="https://animangaindex.substack.com/" target="_blank">Weekly AniManga Index</a> &nbsp;|&nbsp;
+    Updated weekly &nbsp;|&nbsp; May 15, 2026
+  </div>
+
+  <script>
+    const btns  = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.writer-card');
+    const noRes = document.getElementById('no-results');
+
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const cat = btn.dataset.category;
+        let visible = 0;
+        const seenUrls = new Set();
+
+        cards.forEach(card => {
+          const match = cat === 'all' || card.dataset.category === cat;
+          if (match) {
+            const url = card.dataset.url;
+            if (cat === 'all' && seenUrls.has(url)) {
+              card.style.display = 'none';
+            } else {
+              card.style.display = 'flex';
+              seenUrls.add(url);
+              visible++;
+            }
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        if (cat === 'all') {
+          noRes.style.display = 'none';
+        } else {
+          noRes.style.display = visible > 0 ? 'none' : 'block';
+        }
+      });
+    });
+
+    // trigger All on load to deduplicate initial view
+    document.querySelector('.filter-btn[data-category="all"]').click();
+  </script>
+
+</body>
+</html>
