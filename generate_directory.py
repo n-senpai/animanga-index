@@ -17,8 +17,8 @@ SHEET_NAME       = "AniManga Index - Creator Submission Form (Responses)"  # exa
 # NOTE: Replace all placeholders below with your actual details
 YOUR_NAME         = "N Senpai"               # e.g. "N Senpai"
 YOUR_PUBLICATION  = "Weekly AniManga Index"
-YOUR_SUBSTACK_URL = "https://animangaindex.substack.com/"       # e.g. "https://yourname.substack.com"
-YOUR_RSS_FEED     = "https://animangaindex.substack.com/feed"       # e.g. "https://yourname.substack.com/feed"
+YOUR_SUBSTACK_URL = "https://nsenpai.substack.com/"       # e.g. "https://yourname.substack.com"
+YOUR_RSS_FEED     = "https://nsenpai.substack.com/feed"       # e.g. "https://yourname.substack.com/feed"
 YOUR_BANNER_PATH  = "banner.png"                   # banner filename, place in same folder as this script
 
 OUTPUT_FILE = "index.html"
